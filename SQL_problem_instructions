@@ -1,52 +1,21 @@
-HW10 (4 credit hour students)
-We'll be going over the basics of SQL in class on 11/9. I'll show you how to load and export data from sqlite. You should use http://swcarpentry.github.io/sql-novice-survey/ as a reference for this week. Read this entire assignment before starting!
 
-Assignment:
 
-You will write several SQL queries based on the survey.db database provided.
+-Export the results out to a CSV (with headers on, and in CSV mode)
+-Human explanation of what the table contains included
 
-You will write queries, and for all queries you write:
+All queries containing calculations or functions within the select statements are renamed accordingly
 
-export the results out to a CSV (with headers on, and in CSV mode) and submit the data
-write a human explanation of what the table contains
-All queries containing calculations or functions within the select statements will need to rename the column to something appropriate
-All queries should have at least one join
-All queries should be selecting specific columns by name, so none of your queries should be "select * from..." style
-2CR students will write 2 queries, 4CR students will write 4 queries.
+All queries have at least one join
+All queries are selecting specific columns by name
 
-2 credit hours: pick two from this list (you cannot repeat)
-4 credit hours: do one of each of these (you cannot repeat)
-These are the four types of SQL statements to write:
+These are the four types of SQL statements:
 
-where you are modifying a numerical value as part of the select statement. (This can use concepts from Selecting Data, Combining Data, or Calculating New Values)
-where you are concatenating text data within the select statement. (This can use concepts from Selecting Data, Combining Data, or Calculating New Values)
-where you are joining three tables (you'll have at least one join in all your queries, but for this one you should be joining 3 table together). (This can use concepts from Selecting Data, Combining Data, Sorting and Removing Duplicates, or Missing Data)
-where you are aggregating data using group by with multiple groups. (This can use concepts from Selecting Data, Combining Data, Aggregation, Calculating New Values, Sorting or Removing Duplicates, or Filtering)
-*While there are many queries that will technically tic all the boxes here, your queries must make sense and do what your human narrative says they do. For example, you can manipulate the readings values, but you can't just say "doubling all values." There must be a reason for what you are doing to the data, and you must explain what that reason is.
+Statement containing modified a numerical value as part of the select statement
 
-Please label your queries clearly so we know how to grade them. You cannot combine elements into one statement. Well, you can, but you will only receive credit for one category per query.
+Statement containing concatenated text data within the select statement
 
-To export data (follow these directions EXACTLY, the only problems people have had were when they didn't follow this directly):
+Statement where 3 three tables are joined 
 
-Once you have the query you would like to export, and only when you are happy with the output...
+Statement where data is aggregated using group by with multiple groups
 
-1) Set .mode to csv (or other format)
 
-.mode csv
-2) ensure that .headers is on
-
-.headers on
-3) Redirect the output to a file, you provide the name. You will need to provide a different file name for each of your queries. IF YOU DON'T GIVE THIS A DIFFERENT FILE NAME THAN YOU OTHERS THIS YOU WILL MANGLE YOUR DATA.
-
-.output yourfilename.csv
-4) Run the statement
-
-whatever your sql is
-5) reset output with .output stdout, this will change your output back to your screen so you can see your results. This will also complete the writing for the file, so you won't see the contents of the file until you do this.
-
-.output stdout
-What you will turn in:
-
-a document with your queries, the explanations of those queries, and associated narratives
-state which type of query you're writing
-the CSV files, with file names that are appropriate to help us match them up with your queries
