@@ -1,0 +1,206 @@
+
++++++++++++++++++++++++ Problem 1 ++++++++++++++++++++ [ modify a numerical value]
+
+
+
+
+
+ With Selection:  [Calculation - numerical value modification added in Select Statement]
+
+
+
+ _____
+
+[Problem 1 -- Join Visited table to Survey table instead of Person table to get which site as extra info]
+
+Narrative portion:
+
+
+
+Imagined Scenario: Lake's salinity readings were found to be miscalculated and must be adjusted. They are off by a percentage point (too high). They must
+be adjusted to down to correct for his mistake.
+
+# Get rows with salinity readings read taken by lake. Join Visited and Survey table. Look at Site column from Visited table and quant
+and reading columns from Survey table. Add a function onto reading that updates to corrected value.
+
+In this case, null values for person are not included. It should be pointed out we don't know if any of the readings with null value in person column of the
+Survey table are lake's but I am imagining a scenario where the intent is to drop the null values in the specific analysis being done in which
+case we would be focuses on only the salinity records with a person as a value that we are filtering from.
+
+Here, we see just the original salinity readings taken by lake as and the corrected_reading,
+which is the original reading adjusted down by 1%.
+
+
+Select Survey.person, Survey.quant, Survey.reading, (Survey.reading - (.01 * Survey.reading)) AS corrected_reading
+FROM Survey
+Join Visited
+ON
+Survey.taken = Visited.id
+WHERE
+Survey.quant = "sal" AND Survey.person = "lake";
+
+
+person      quant       reading     corrected_reading
+----------  ----------  ----------  -----------------
+lake        sal         0.05        0.0495
+lake        sal         0.1         0.099
+lake        sal         0.09        0.0891
+lake        sal         0.21        0.2079
+
+
+
+
+
+
+
+
+
+
+  ++++++++++++++++++++  Problem   2    +++++++++++++++++++++++++   [ Concatenate]
+
+
+
+
+
+
+SELECT Person.id, Person.id||'|'|| Person.personal ||' '||Person.family ||'|'||Visited.site, Survey.reading, Visited.dated
+FROM Survey
+JOIN Person
+JOIN Visited
+ON
+Visited.id = Survey.taken AND Survey.person = Person.id
+ORDER BY Person.id ASC;
+
+
+id          Person.id||'|'|| Person.personal ||' '||Person.family ||'|'||Visited.site  reading     dated
+----------  -------------------------------------------------------------------------  ----------  ----------
+dyer        dyer|William Dyer|DR-1                                                     0.13        1927-02-08
+dyer        dyer|William Dyer|DR-1                                                     9.82        1927-02-08
+dyer        dyer|William Dyer|DR-1                                                     0.09        1927-02-10
+dyer        dyer|William Dyer|DR-1                                                     7.8         1927-02-10
+lake        lake|Anderson Lake|DR-3                                                    0.05        1930-01-07
+lake        lake|Anderson Lake|DR-3                                                    0.1         1930-02-26
+lake        lake|Anderson Lake|DR-3                                                    -16.0
+lake        lake|Anderson Lake|DR-3                                                    0.09
+lake        lake|Anderson Lake|DR-3                                                    2.19
+lake        lake|Anderson Lake|MSK-4                                                   0.21        1932-01-14
+lake        lake|Anderson Lake|MSK-4                                                   1.46        1932-01-14
+pb          pb|Frank Pabodie|DR-3                                                      -21.5       1930-01-07
+pb          pb|Frank Pabodie|DR-3                                                      8.41        1930-01-07
+pb          pb|Frank Pabodie|DR-3                                                      7.22        1930-01-12
+pb          pb|Frank Pabodie|DR-3                                                      -18.5       1930-02-26
+pb          pb|Frank Pabodie|DR-3                                                      4.35        1930-02-26
+roe         roe|Valentina Roerich|DR-3                                                 41.6
+roe         roe|Valentina Roerich|MSK-4                                                22.5        1932-01-14
+roe         roe|Valentina Roerich|DR-1                                                 11.25       1932-03-22
+
+
+
+
+Imagined scenario: We want to look "at a glance" at id names
+associated with actual first and last names (personal, family from the Person table)
+associated with the sites they visited so we can easily see who visited which site on which date and how many
+readings (roughly proportionately) each member took from the given sites. For example, we can see easily here
+that dyer took the majority of readings (all but 1) from the DR-1 site and pb (or Frank Pabodie) took and lake (or
+Anderson Lake) took about half of the DR-3 readings each (ony 1 taken by Valentina Roerich besides).
+We must keep in mind that the concatenation operation removed the null values
+for Person.id so we don't see those sites listed where the identity of the person taking the reading is unknown.
+
+I concatenated (the string values of the)id column from the person table with the (string values of the) personal column
+from the Person table using the "pipe" symbol string and I concatenated the family column from the Person table with the
+site column from the Visited table
+using a space as my string.
+
+
+
+
+ +++++++++++++++++++++++++++ Problem 3 ++++++++++++++++++++ [Join 3 Tables]
+
+SELECT Person.id, Survey.quant, Survey.reading, Visited.dated FROM Survey JOIN Person JOIN Visited ON Person.id = Survey.person
+AND
+Survey.taken = Visited.id WHERE Visited.dated IS NOT NULL AND Survey.quant = "sal";
+
+
+id          quant       reading     dated
+----------  ----------  ----------  ----------
+dyer        sal         0.13        1927-02-08
+dyer        sal         0.09        1927-02-10
+lake        sal         0.05        1930-01-07
+lake        sal         0.1         1930-02-26
+lake        sal         0.21        1932-01-14
+roe         sal         22.5        1932-01-14
+
+
+
+
+Imagined scenario:
+
+Here, I am wanting to get out the non-null value dates and the salinity readings on entries with recorded
+dates only and see the team members responsible for those readings and on which dates. We can see that of the recorded
+dated entries and of the readings with recorded values, dyer took 2 of the salinity readings. Lake took 3 of the salinity
+readings and roe took 1 of the readings that were definitely salinity. Dyer was there on 2 occasions within 2 days of each other within the month
+of February in the year 1927 taking those readings. Then we don't have any more salinity readings until lake takes 2 in 1930 (1 in January and
+1 in February, so within a month or so of each other. Then we don't have salinity reading for 2 more years when lake takes 1 on January 14, 1927
+and roe takes one on the same day. Roe's reading looks like an outlier. (not within reason for a salinity value).
+
+
+
+
+
+
+
+
+
+
+ ++++++++++++++++ Problem 4 ++++++++++++++++++++++ [Aggregate with 2 groups]
+
+
+SELECT person, name, count(name) AS site_readings_count
+FROM Survey
+JOIN Visited
+JOIN Site
+ON
+Survey.taken = Visited.id AND Visited.site = Site.name
+GROUP BY person, name;
+
+
+
+person      name        site_readings_count
+----------  ----------  -------------------
+            DR-3        2
+dyer        DR-1        4
+lake        DR-3        5
+lake        MSK-4       2
+pb          DR-3        5
+roe         DR-1        1
+roe         DR-3        1
+roe         MSK-4       1
+
+
+Imagined Scenario:
+
+Here, I first join the Visited table and the Site table to the Survey table (identifying
+the taken column from the Survey table and the id column from the Visited table as the same
+columns and identifying the site column from the Visited table as the same column as the name column
+from the Site table.  I ask it to order the columns first by person and creating subsets from these sets
+ordering next by site (name). I then ask to see the person, name and to calculate a count of the times the
+person visited the associated site. In this query, I include null values for person so we can also see
+how many sites do not have a recorded value for person and which sites don't have these values.
+It turns out there is just 2 entries without recorded values for person and they both
+entries of readings taken at the DR-3 site. We can see from this query (combined with previous query) that dyer still
+have taken the majority of reading for the DR-1 site by a landslide and the null values affect this not at all. Since
+there are 13 readings for the DR-3 site, when we consider the null values, we can see that we can't identify who took
+the readings at this site for about 15% of the entries. That could matter depending on what you are trying to understand
+more about. On the other hand, it's also worthwhile noting that we can see that we do have values for the other
+sites and so null values are not a consideration
+at the other sites when it comes to identifying who took the reading.
+
+
+
+
+
+
+
+
+
+
